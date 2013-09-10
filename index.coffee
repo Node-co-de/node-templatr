@@ -1,15 +1,17 @@
 
 fs = require 'fs'
 
+htmls = require './lib/htmls'
+
+args = process.argv.slice 2
+
 getTemplateFileContent = (templateFileName) ->
   file = fs.readFileSync("#{process.cwd()}/templates/#{templateFileName}.html").toString()
   return file.split '\n'
 
 
-files = fs.readdirSync "#{process.cwd()}/htmls"
-
-for file in files
-  if -1 < file.search /\.html$/
+if '-c' is args[0]
+  for file in htmls.getFiles()
     fileOut = []
 
     for line,i in fs.readFileSync("#{process.cwd()}/htmls/#{file}").toString().split '\n'
@@ -39,3 +41,6 @@ for file in files
         fileOut.push line
     
     fs.writeFileSync "#{process.cwd()}/outs/out.#{file}", fileOut.join '\n'
+      
+else if '-h' is args[0]
+  console.log "help\n-h print this help\n-c compile htmls directory"
